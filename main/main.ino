@@ -1,12 +1,6 @@
 // KeyPad Librairie
 #include "SoftwareSerial.h"
 
-// Rasberry
-
-
-// Vecteurs pour les liste modulables
-#include <Vector.h>
-
 #if defined(ARDUINO_ARCH_AVR)
 SoftwareSerial mySerial(A0,A1);
 #define KeyPad mySerial
@@ -90,8 +84,8 @@ void loop() {
   CapteurVerification();
 
   // Vérification de certaines conditions
-  demandeStart = currentMillis - timerUser >= countUser; // Savoir si la demande accepté
-  boolStart = currentMillis - timerStart > countStart; // Savoir si le système détecte les capteurs
+  demandeStart = !TimerBelow(timerUser, countUser); // Savoir si la demande peut être accepté (Si délais en dessous de la sécurité, ne rien faire)
+  boolStart = !TimerBelow(timerStart, countStart); // Savoir si le système détecte les capteurs
   capteurs = capteurOuvert || capteurFerme; // Initialisation de la variable pour le changement d'état  
 
   // Essaye d'arrêter le mouvement du portail 
@@ -125,12 +119,10 @@ void loop() {
 // Changer le sens ou démarrer le mouvement du portail
 bool PortailChange()
 {
-  Serial.println("Changement");
   timerUser = currentMillis; // Initialiser le delay de demande
 
   // Met en marche le moteur dans la direction souhaité
   FermerOuOuvert();
-  Serial.println("");
 
   timerLed = currentMillis;
   return true;
@@ -190,3 +182,8 @@ bool TryStopAction()
 
   return false;
 }
+
+// Redirection vers l'onglet parametre : tous les onglets sont liés au principal mais ne sont pas liés entre eux
+bool Println(String texte = "") {return Printforln(texte);}
+
+bool Print(String texte = "") {return Printer(texte);}

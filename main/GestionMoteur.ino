@@ -3,22 +3,22 @@
 bool MoteurStart(bool direction)
 {
   moteurWork = true;
+
+  // Demande de fermeture
   if(direction)
   {
     LCDFermeture(); // Afficher Fermeture
-    Serial.println("Fermeture en cours");
     // Sens de déplacement : fermeture
-    digitalWrite(moteurFerm, true);
-    digitalWrite(moteurOuv, false);
+    WriteOn(moteurFerm);
+    WriteOff(moteurOuv);
 
     return true;
   }
 
   LCDOuverture(); // Afficher Ouverture
-  Serial.println("Ouverture en cours");
   // Sens de déplacement : ouverture
-  digitalWrite(moteurOuv, true);
-  digitalWrite(moteurFerm, false);
+  WriteOn(moteurOuv);
+  WriteOff(moteurFerm);
   return true;
 
 }
@@ -28,15 +28,13 @@ bool MoteurState() { return moteurWork;}
 
 // Arrêter le moteur
 bool MoteurStop()
-{
-  Serial.println("Arret en cours");
-  
-  MDPInputValueReset(); // L'utilisateur ne voulait plus taper le MPD
-
+{  
+  MDPInputValueReset(); // L'utilisateur ne veux plus taper le MPD
 
   moteurWork = false;
+
   // Arrêter moteur
-  digitalWrite(moteurFerm, false);
-  digitalWrite(moteurOuv, false);
+  WriteOff(moteurFerm);
+  WriteOff(moteurOuv);
   return true;
 }

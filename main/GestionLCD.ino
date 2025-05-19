@@ -5,16 +5,26 @@ void LCDStart() {
   lcd.display();
 }
 
+// Effacer le texte du LCD
+void Clear()
+{
+  lcd.clear(); // Effacer le texte du LCD
+  Println(); // Debug
+}
+
 // Afficher le texte voulue à l'endroit souhaité
 void PTexte(String texte = "", int curseur = 0, int ligne = 0) {
-  lcd.setCursor(curseur, ligne);
-  lcd.print(texte);
+  lcd.setCursor(curseur, ligne); // Placement à l'endroit voulue
+  lcd.print(texte); // Ecrire le texte
+
+  Print(texte); // Debug
+  Println(); // Debug
 }
 
 // Effacer l'écran et afficher le texte voulue à l'endroit indiqué
 void CPTexte(String texte = "", int curseur = 0, int ligne = 0) {
-  lcd.clear();
-  PTexte(texte, curseur, ligne);
+  Clear(); // Effacer le texte du LCD
+  PTexte(texte, curseur, ligne); // Afficher le texte voulue à l'endroit souhaité
 }
 
 // Afficher le texte "Mot de passe" à la ligne voulue

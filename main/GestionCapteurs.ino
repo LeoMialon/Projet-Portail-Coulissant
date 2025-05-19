@@ -39,11 +39,11 @@ void CapteurInitialisation()
   pinMode(capteurRecep, INPUT);
 
   // Activer le capteur infrarouge
-  digitalWrite(capteurEme, true); 
+  WriteOn(capteurEme); 
   
   // Arreter le moteur
-  digitalWrite(moteurOuv, false); 
-  digitalWrite(moteurFerm, false);  
+  WriteOff(moteurOuv); 
+  WriteOff(moteurFerm);  
 
   // KeyPad
   KeyPad.begin(9600); 
@@ -56,4 +56,18 @@ void CapteurVerification()
   objetDetecte = digitalRead(capteurRecep); // Quand un objet est détecté
   capteurOuvert = digitalRead(captOuvert); // Capteur d'ouverture / Portail Ouvert
   capteurFerme = digitalRead(captFerme); // Capteur de fermeture / Portail Fermer
+}
+
+// Activer le capteur 
+bool WriteOn(short nb)
+{
+  digitalWrite(nb, true);
+  return true;
+}
+
+// Désactiver le capteur
+bool WriteOff(short nb)
+{
+  digitalWrite(nb, false);
+  return false;
 }
