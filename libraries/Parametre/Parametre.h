@@ -19,13 +19,6 @@ class Parametre {
 
   // Délais inférieur à la valeur max
   bool TimerBelow(long tempsActuel, long tempsMax, long currentMillis);
-  
-  // Mettre les pins en sortie
-  void SetOutputPin(int pin1 = -1, int pin2 = -1, int pin3 = -1, int pin4 = -1, int pin5 = -1, int pin6 = -1, int pin7 = -1, int pin8 = -1);
-  
-  // Mettre les pins en entrée
-  void SetInputPin(int pin1 = -1, int pin2 = -1, int pin3 = -1, int pin4 = -1, int pin5 = -1, int pin6 = -1, int pin7 = -1, int pin8 = -1);
-
 
 };
 

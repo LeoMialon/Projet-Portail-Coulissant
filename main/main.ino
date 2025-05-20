@@ -2,6 +2,7 @@
 #include <Parametre.h>
 #include <EcranLCD.h>
 #include <ManageLED.h>
+#include <Capteurs.h>
 
 // KeyPad Librairie
 #include "SoftwareSerial.h"
@@ -18,6 +19,7 @@ SoftwareSerial mySerial(A0, A1);
 CommandeLCD myLCD;  // Mon écran
 Parametre Par;      // Initialiser la librairie
 GestionLED myLED;
+Capteurs myCapteurs;
 
 // Compteurs
 long currentMillis = 0;  // L'horloge de l'arduino

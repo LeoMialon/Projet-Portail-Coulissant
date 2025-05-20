@@ -9,16 +9,16 @@ bool MoteurStart(bool direction)
   {
     LCDFermeture(); // Afficher Fermeture
     // Sens de déplacement : fermeture
-    WriteOn(moteurFerm);
-    WriteOff(moteurOuv);
+    myCapteurs.WriteOn(moteurFerm);
+    myCapteurs.WriteOff(moteurOuv);
 
     return true;
   }
 
   LCDOuverture(); // Afficher Ouverture
   // Sens de déplacement : ouverture
-  WriteOn(moteurOuv);
-  WriteOff(moteurFerm);
+  myCapteurs.WriteOn(moteurOuv);
+  myCapteurs.WriteOff(moteurFerm);
   return true;
 
 }
@@ -34,7 +34,6 @@ bool MoteurStop()
   moteurWork = false;
 
   // Arrêter moteur
-  WriteOff(moteurFerm);
-  WriteOff(moteurOuv);
+  myCapteurs.WriteOff(moteurFerm, moteurOuv);
   return true;
 }

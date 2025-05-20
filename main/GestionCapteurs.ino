@@ -21,15 +21,15 @@ int moteurFerm = 9;
 void CapteurInitialisation()
 {
 
-  Par.SetOutputPin(capteurEme, ledPortail, moteurOuv, moteurFerm);
-  Par.SetInputPin(captOuvert, captFerme, capteurRecep, bPInt, bPExt);
+  myCapteurs.SetOutputPin(capteurEme, ledPortail, moteurOuv, moteurFerm);
+  myCapteurs.SetInputPin(captOuvert, captFerme, capteurRecep, bPInt, bPExt);
   
   // Activer le capteur infrarouge
-  WriteOn(capteurEme); 
+  myCapteurs.WriteOn(capteurEme); 
   
   // Arreter le moteur
-  WriteOff(moteurOuv); 
-  WriteOff(moteurFerm);  
+  myCapteurs.WriteOff(moteurOuv); 
+  myCapteurs.WriteOff(moteurFerm);  
 
   // KeyPad
   KeyPad.begin(9600);
@@ -45,18 +45,4 @@ void CapteurVerification()
   objetDetecte = digitalRead(capteurRecep); // Quand un objet est détecté
   capteurOuvert = digitalRead(captOuvert); // Capteur d'ouverture / Portail Ouvert
   capteurFerme = digitalRead(captFerme); // Capteur de fermeture / Portail Fermer
-}
-
-// Activer le capteur 
-bool WriteOn(short nb)
-{
-  digitalWrite(nb, true);
-  return true;
-}
-
-// Désactiver le capteur
-bool WriteOff(short nb)
-{
-  digitalWrite(nb, false);
-  return false;
 }
