@@ -32,7 +32,10 @@ void CapteurInitialisation()
   WriteOff(moteurFerm);  
 
   // KeyPad
-  KeyPad.begin(9600); 
+  KeyPad.begin(9600);
+
+  // Initialiser LED
+  myLED.LED(ledPortail); 
 }
 
 // Vérifier les différents capteurs
