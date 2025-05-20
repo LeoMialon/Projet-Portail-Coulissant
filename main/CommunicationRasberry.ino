@@ -21,7 +21,7 @@ bool CheckRasberryPi() {
 
   // Si le Rasberry envoit une donnée
   if (value != "") {
-    Println(value);
+    Par.Println(value);
 
     // Si la commande demande d'ouvrir le portail
     if (value == "ouvrir" && !ouvertureEnCours) {

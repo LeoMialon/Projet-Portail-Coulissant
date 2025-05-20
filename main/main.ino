@@ -1,3 +1,7 @@
+// Librairie Custom
+#include <Parametre.h>
+#include <EcranLCD.h>
+
 // KeyPad Librairie
 #include "SoftwareSerial.h"
 
@@ -14,7 +18,8 @@ SoftwareSerial mySerial(A0,A1);
 #include <Wire.h>
 #include "rgb_lcd.h"
 
-rgb_lcd lcd; // Mon écran
+CommandeLCD myLCD; // Mon écran
+Parametre Par; // Initialiser la librairie
 
 // Compteurs
 long currentMillis = 0; // L'horloge de l'arduino
@@ -48,14 +53,10 @@ bool capteurFerme = false; // Portail fermer
 
 bool demandeExtAccept = false; // Le MDP est correct et le bouton extérieur est activé
 
-
 void setup() 
 {
   // Pour l'affichage dans le moniteur série
   Serial.begin(9600);
-
-  // Démarage de l'ecran LCD
-  LCDStart();
 
   // Initialisation des différents composants
   CapteurInitialisation();
@@ -84,8 +85,8 @@ void loop() {
   CapteurVerification();
 
   // Vérification de certaines conditions
-  demandeStart = !TimerBelow(timerUser, countUser); // Savoir si la demande peut être accepté (Si délais en dessous de la sécurité, ne rien faire)
-  boolStart = !TimerBelow(timerStart, countStart); // Savoir si le système détecte les capteurs
+  demandeStart = !Par.TimerBelow(timerUser, countUser, currentMillis); // Savoir si la demande peut être accepté (Si délais en dessous de la sécurité, ne rien faire)
+  boolStart = !Par.TimerBelow(timerStart, countStart, currentMillis); // Savoir si le système détecte les capteurs
   capteurs = capteurOuvert || capteurFerme; // Initialisation de la variable pour le changement d'état  
 
   // Essaye d'arrêter le mouvement du portail 
@@ -182,8 +183,3 @@ bool TryStopAction()
 
   return false;
 }
-
-// Redirection vers l'onglet parametre : tous les onglets sont liés au principal mais ne sont pas liés entre eux
-bool Println(String texte = "") {return Printforln(texte);}
-
-bool Print(String texte = "") {return Printer(texte);}
