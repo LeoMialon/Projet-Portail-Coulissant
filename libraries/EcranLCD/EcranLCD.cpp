@@ -14,6 +14,7 @@ CommandeLCD::LCD()
 void CommandeLCD::LCDStart() {
   myLCD.begin(16, 2);
   myLCD.display();
+  Clear();
 }
 
 // Effacer le texte du LCD

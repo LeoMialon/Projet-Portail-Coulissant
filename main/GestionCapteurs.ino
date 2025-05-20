@@ -20,24 +20,10 @@ int moteurFerm = 9;
 // Initialiser les différents capteurs
 void CapteurInitialisation()
 {
-  pinMode(capteurEme, OUTPUT); // Capteur emmeteur infrarouge
-  pinMode(ledPortail, OUTPUT); // LED
 
-  // Moteur 
-  pinMode(moteurOuv, OUTPUT); 
-  pinMode(moteurFerm, OUTPUT);
-
-  // Capteur fin de course
-  pinMode(captOuvert, INPUT);
-  pinMode(captFerme, INPUT);
-
-  // Boutons poussoirs
-  pinMode(bPInt, INPUT);
-  pinMode(bPExt, INPUT);
-
-  // Capteurs infrarouges
-  pinMode(capteurRecep, INPUT);
-
+  Par.SetOutputPin(capteurEme, ledPortail, moteurOuv, moteurFerm);
+  Par.SetInputPin(captOuvert, captFerme, capteurRecep, bPInt, bPExt);
+  
   // Activer le capteur infrarouge
   WriteOn(capteurEme); 
   

@@ -25,7 +25,7 @@ Parametre Par; // Initialiser la librairie
 long currentMillis = 0; // L'horloge de l'arduino
 
 // Variables pour la vérification de la demande faites par l'utilisateur
-long countUser = 300; // Valeur const 
+long countUser = 10; // Valeur const 
 long timerUser = 0; // Timer 
 bool demandeStart  = currentMillis - timerUser >= countUser; // Savoir si l'utilisateur peut faire une demande
 
@@ -57,6 +57,9 @@ void setup()
 {
   // Pour l'affichage dans le moniteur série
   Serial.begin(9600);
+  
+  // Initialiser LCD
+  myLCD.LCD();
 
   // Initialisation des différents composants
   CapteurInitialisation();
@@ -78,7 +81,6 @@ void setup()
 void loop() {
   // Initialiser les millisecondes 
   currentMillis = millis();
-
   demandeExtAccept = MDPVerification(); // Vérifier si le mdp doit être taper et si le mot de passe est correct
 
   // Vérifier les différents capteurs 

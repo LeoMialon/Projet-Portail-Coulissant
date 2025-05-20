@@ -32,7 +32,7 @@ bool MDPVerification() {
   if (MDPInput) {
     // Taper le MDP et vérifier s'il est bon
     if (!MDPCreate && VerifierCreationMDP()) {
-      Serial.println("Yahoo");
+      Par.Println("Yahoo");
       MDPCreate = true;
       MDP = true;
       return true;
@@ -40,7 +40,7 @@ bool MDPVerification() {
 
     if (TimerEndReset())  // Trop de temps pour taper le MDP : terminer la procédure
     {
-      Serial.println("Reset");
+      Par.Println("Reset");
       MDPInputValueReset();  // L'utilisateur ne tape plus de MDP
       LCDDisplay();          // Affciher l'état actuel du portail
     }
@@ -57,7 +57,7 @@ bool MDPVerification() {
   if (MDP && count > timerMDP) {
     MDP = false;           // Il faut retaper le MDP
     MDPInputValueReset();  // L'utilisateur ne tape plus de MDP
-    Serial.println("Le Mot de passe n'est plus valide");
+    Par.Println("Le Mot de passe n'est plus valide");
     ResetTimer(&countMDP); // Remettre le compteur à 0
   }
 
@@ -88,7 +88,7 @@ bool VerifierMDP() {
   if (UserKeypadUse() && currentMDPInput.length() == 6) {
     if (Equal(currentMDPInput, MDPValue))  // On compare le MDP taper par l'utilisateur avec le MDP sauvegardé
     {
-      Serial.println("MDP correct");
+      Par.Println("MDP correct");
       LCDMDPTrue();  // Afficher que le MDP est bon
       MDPInputValueReset(); // Remettre le MDP à zéro
       return true;
@@ -154,8 +154,8 @@ bool Equal(String string1, String string2) {
 bool AddToCurrentMDP()
 {
   currentMDPInput += KeyPadNumber;  // Ajouter le chiffre à la suite
-  Serial.print("KeyPadNumber: ");
-  Serial.println(currentMDPInput.length());
+  Par.Print("KeyPadNumber: ");
+  Par.Println((String)currentMDPInput.length());
   ResetTimer(&countMDP);
   return true;
 }
