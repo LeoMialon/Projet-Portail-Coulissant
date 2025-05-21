@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "Capteurs.h"
 
-// Mettre les capteurs en 
+// Mettre les capteurs en sortie
   void Capteurs::SetOutputPin(int pin1 = -1, int pin2 = -1, int pin3 = -1, int pin4 = -1, int pin5 = -1, int pin6 = -1, int pin7 = -1, int pin8 = -1)
   {
     pinMode(pin1, OUTPUT);
