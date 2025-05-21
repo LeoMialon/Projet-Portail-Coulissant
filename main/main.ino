@@ -42,8 +42,8 @@ bool demande = false;           // Detection de l'utilisateur
 bool moteurWork = false;        // Moteur en marche
 bool capteurs;                  // Capteurs détecté
 
-bool capteurOuvert = false;  // portail Ouvert
-bool capteurFerme = false;   // Portail fermer
+bool portailOuvert = false;  // portail Ouvert
+bool portailFermer = false;  // Portail fermer
 
 bool demandeExtAccept = false;  // Le MDP est correct et le bouton extérieur est activé
 
@@ -51,16 +51,14 @@ void setup() {
   // Pour l'affichage dans le moniteur série
   Serial.begin(9600);
 
-  // Initialiser LCD
-  myLCD.LCD();
+  InitialisationLCD();
 
-  // Initialisation des différents composants
-  CapteurInitialisation();
+  InitialisationCapteurs();
 
-  CapteurVerification();  // Verifier les différents capteurs
+  VerificationCapteurs();
 
   // fermer le portail au démarrage s'il ne l'est pas
-  if (!capteurFerme) {
+  if (!portailFermer) {
     MoteurStart(true);
     fermetureEnCours = true;
   } else  // Afficher Fermer
@@ -75,12 +73,12 @@ void loop() {
   demandeExtAccept = MDPVerification();  // Vérifier si le mdp doit être taper et si le mot de passe est correct
 
   // Vérifier les différents capteurs
-  CapteurVerification();
+  VerificationCapteurs();
 
   // Vérification de certaines conditions
   demandeAccept = !Par.TimerBelow(timerUser, countUser, currentMillis);    // Savoir si la demande peut être accepté (Si délais en dessous de la sécurité, ne rien faire)
   detectCapteur = !Par.TimerBelow(timerStart, countStart, currentMillis);  // Savoir si le système détecte les capteurs
-  capteurs = capteurOuvert || capteurFerme;                                // Initialisation de la variable pour le changement d'état
+  capteurs = portailOuvert || portailFermer;                               // Initialisation de la variable pour le changement d'état
 
   // Essaye d'arrêter le mouvement du portail
   if (TryStopAction()) {
@@ -113,19 +111,18 @@ bool PortailChange() {
   timerUser = currentMillis;  // Initialiser le delay de demande
 
   // Met en marche le moteur dans la direction souhaité
-  FermerOuOuvert();
+  FermerOuOuvrir();
 
   myLED.SetCompteurLED(currentMillis);
   return true;
 }
 
 // Fermer ou ouvrir le portail
-bool FermerOuOuvert() {
-  if (capteurs)  // Portail à l'arrêt : Faire marcher le moteur
-  {
+bool FermerOuOuvrir() {
+  if (capteurs) { // Portail à l'arrêt : Faire marcher le moteur
     timerStart = currentMillis;        // Sécurité
-    ouvertureEnCours = capteurFerme;   // Si le portail est fermer, le portail va s'ouvrir
-    fermetureEnCours = capteurOuvert;  // Si le portail est ouvert, le portail se ferme
+    ouvertureEnCours = portailFermer;  // Si le portail est fermer, le portail va s'ouvrir
+    fermetureEnCours = portailOuvert;  // Si le portail est ouvert, le portail se ferme
   }
 
   // Si le portail est en mouvement
@@ -148,8 +145,7 @@ bool TryStopAction() {
   }
 
   // Fin de cycle du portail
-  if (capteurs && detectCapteur)  // Capteur détecte le portail
-  {
+  if (capteurs && detectCapteur) { // Capteur détecte le portail
     // Arrêter moteur
     if (MoteurState())
       MoteurStop();

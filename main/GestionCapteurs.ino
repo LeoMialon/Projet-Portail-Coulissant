@@ -1,48 +1,52 @@
-// Led 
-int ledPortail = 4; // Activation de la led
+// Led
+short ledPortail = 4;  // Activation de la led
 
-// Capteurs FDC 
-int captOuvert = 5; // Capteur Ouverture
-int captFerme = A2; // Capteur Fermeture
+// Capteurs FDC
+short captOuvert = 5;  // Capteur Ouverture
+short captFerme = A2;  // Capteur Fermeture
 
-// Bouton Poussoirs 
-int bPInt = 2; // Demande de l'utilisateur à l'intérieur 
-int bPExt = 7; // Demande de l'utilisatuer à l'extérieur 
+// Bouton Poussoirs
+short bPInt = 2;  // Demande de l'utilisateur à l'intérieur
+short bPExt = 7;  // Demande de l'utilisatuer à l'extérieur
 
-// Capteurs infrarouges 
-int capteurRecep = 3; // Detecter l'objet 
-int capteurEme = 6; // Capteur emetteur 
+// Capteurs infrarouges
+short capteurRecep = 3;  // Detecter l'objet
+short capteurEme = 6;    // Capteur emetteur
 
-// Moteur 
-int moteurOuv = 8;
-int moteurFerm = 9;
+// Moteur
+short moteurOuv = 8;
+short moteurFerm = 9;
 
 // Initialiser les différents capteurs
-void CapteurInitialisation()
-{
-
+void InitialisationCapteurs() {
   myCapteurs.SetOutputPin(capteurEme, ledPortail, moteurOuv, moteurFerm);
   myCapteurs.SetInputPin(captOuvert, captFerme, capteurRecep, bPInt, bPExt);
-  
+
   // Activer le capteur infrarouge
-  myCapteurs.WriteOn(capteurEme); 
-  
+  myCapteurs.WriteOn(capteurEme);
+
   // Arreter le moteur
-  myCapteurs.WriteOff(moteurOuv); 
-  myCapteurs.WriteOff(moteurFerm);  
+  myCapteurs.WriteOff(moteurOuv);
+  myCapteurs.WriteOff(moteurFerm);
 
   // KeyPad
   KeyPad.begin(9600);
 
   // Initialiser LED
-  myLED.LED(ledPortail); 
+  myLED.LED(ledPortail);
 }
 
 // Vérifier les différents capteurs
-void CapteurVerification()
-{
-  demande = digitalRead(bPInt) || demandeExtAccept; // Détecter quand l'utilisateur demande le changement d'état
-  objetDetecte = digitalRead(capteurRecep); // Quand un objet est détecté
-  capteurOuvert = digitalRead(captOuvert); // Capteur d'ouverture / Portail Ouvert
-  capteurFerme = digitalRead(captFerme); // Capteur de fermeture / Portail Fermer
+void VerificationCapteurs() {
+  demande = digitalRead(bPInt) || demandeExtAccept;  // Détecter quand l'utilisateur demande le changement d'état
+
+  LireEtAppliquer(capteurRecep, &objetDetecte);  // Quand un objet est détecté
+  LireEtAppliquer(captOuvert, &portailOuvert);   // Capteur d'ouverture / Portail Ouvert
+  LireEtAppliquer(captFerme, &portailFermer);    // Capteur de fermeture / Portail Fermer
+}
+
+
+// Lire le capteur en digitalRead et appliquer le résultat à la variable
+void LireEtAppliquer(short capteur, bool* variable) {
+  *variable = digitalRead(capteur);
 }

@@ -1,18 +1,29 @@
+// Initialiser LCD
+void InitialisationLCD()
+{
+  myLCD.LCD();
+}
+
 
 // Afficher le texte "Mot de passe" à la ligne voulue
 void PMDP(int ligne = 0) {
   myLCD.CPTexte("Mot de passe", 2, ligne);
 }
 
+// Afficher le texte "Portail" à la ligne voulue
+void PPortail(int ligne = 0){
+  myLCD.CPTexte("Portail", 5, ligne);
+}
+
 // Afficher portail fermer
 void LCDFermer() {
-  myLCD.CPTexte("Portail", 5);
+  PPortail();
   myLCD.PTexte("Fermer", 6, 1);
 }
 
 // Afficher portail ouvert
 void LCDOuvert() {
-  myLCD.CPTexte("Portail", 5);
+  PPortail();
   myLCD.PTexte("Ouvert", 5, 1);
 }
 
@@ -29,13 +40,13 @@ void LCDOuverture() {
 
 // Afficher arret d'urgence
 void LCDStop() {
-  myLCD.CPTexte(";)", 4);
+  myLCD.CPTexte(";)", 7);
 }
 
 // Afficher texte pour l'état correspondant
 void LCDDisplay() {
-  if (capteurFerme) { LCDFermer(); }  // Afficher fermer
-  else if (capteurOuvert) {
+  if (portailFermer) { LCDFermer(); }  // Afficher fermer
+  else if (portailOuvert) {
     LCDOuvert();
   }                                               // Afficher ouvert
   else if (ouvertureEnCours) { LCDOuverture(); }  // Afficher ouverture
