@@ -6,7 +6,7 @@ void InitialisationLCD()
 
 
 // Afficher le texte "Mot de passe" à la ligne voulue
-void PMDP(int ligne = 0) {
+void PMotDePasse(int ligne = 0) {
   myLCD.CPTexte("Mot de passe", 2, ligne);
 }
 
@@ -55,38 +55,38 @@ void LCDDisplay() {
   }  // Afficher fermeture
 }
 
-// Afficher pour la création du MDP
-void LCDSetMDP() {
-  PMDP(1);
+// Afficher pour la création du MotDePasse
+void LCDSetMotDePasse() {
+  PMotDePasse(1);
   myLCD.PTexte("Creer votre", 2, 0);
 }
 
-// Afficher la confirmation de la création du MDP
-void LCDMDPCreated() {
-  PMDP();
+// Afficher la confirmation de la création du MotDePasse
+void LCDMotDePasseCreated() {
+  PMotDePasse();
   myLCD.PTexte("cree", 3, 1);
 }
 
-// Quand le MDP taper est juste
-void LCDMDPTrue() {
-  PMDP();
+// Quand le MotDePasse taper est juste
+void LCDMotDePasseTrue() {
+  PMotDePasse();
   myLCD.PTexte("Vrai", 6, 1);
 }
 
-// Quand le MDP taper est faux
-void LCDMDPFalse() {
-  PMDP();
+// Quand le MotDePasse taper est faux
+void LCDMotDePasseFalse() {
+  PMotDePasse();
   myLCD.PTexte("Faux", 6, 1);
 }
 
 // Afficher Taper Mot de passe
-void LCDInputMDP() {
-  PMDP(1);
+void LCDInputMotDePasse() {
+  PMotDePasse(1);
   myLCD.PTexte("Taper", 6);
 }
 
-// Afficher MDP remis à zéro
-void LCDMDPMotDePasseReset(){
-  PMDP();
+// Afficher MotDePasse remis à zéro
+void LCDMotDePasseMotDePasseReset(){
+  PMotDePasse();
   myLCD.PTexte("Remis a zero", 2, 1);
 }

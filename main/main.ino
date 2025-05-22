@@ -45,18 +45,20 @@ bool capteurs;                  // Capteurs détecté
 bool portailOuvert = false;  // portail Ouvert
 bool portailFermer = false;  // Portail fermer
 
-bool demandeExtAccept = false;  // Le MDP est correct et le bouton extérieur est activé
+bool demandeExtAccept = false;  // Le MotDePasse est correct et le bouton extérieur est activé
 
 void setup() {
   // Pour l'affichage dans le moniteur série
   Serial.begin(9600);
+  // Pour le temps de lecture de la carte arduino sur le rasberry
+  Serial.setTimeout(10);
 
   InitialisationLCD();
 
   InitialisationCapteurs();
 
   VerificationCapteurs();
-
+  
   // fermer le portail au démarrage s'il ne l'est pas
   if (!portailFermer) {
     MoteurStart(true);
@@ -70,13 +72,13 @@ void setup() {
 void loop() {
   // Initialiser les millisecondes
   currentMillis = millis();
-  demandeExtAccept = MDPVerification();  // Vérifier si le mdp doit être taper et si le mot de passe est correct
+  demandeExtAccept = MotDePasseVerification();  // Vérifier si le MotDePasse doit être taper et si le mot de passe est correct
 
   // Vérifier les différents capteurs
   VerificationCapteurs();
 
   // Vérification de certaines conditions
-  demandeAccept = !Par.TimerBelow(timerUser, countUser, currentMillis);    // Savoir si la demande peut être accepté (Si délais en dessous de la sécurité, ne rien faire)
+  demandeAccept = !Par.TimerBelow(timerUser, countUser, currentMillis) && detectCapteur;    // Savoir si la demande peut être accepté (Si délais en dessous de la sécurité, ne rien faire)
   detectCapteur = !Par.TimerBelow(timerStart, countStart, currentMillis);  // Savoir si le système détecte les capteurs
   capteurs = portailOuvert || portailFermer;                               // Initialisation de la variable pour le changement d'état
 
@@ -87,13 +89,11 @@ void loop() {
       LCDStop();  // Afficher Arret
   }
 
-  // Changer le sens ou démarrer le mouvement du portail
-
-  // Avec le RasberryPi / Site web
-  if (CheckRasberryPi()) {
-    // Mettre en marche le moteur
-    MoteurStart(fermetureEnCours);
+  if(CheckRasberryPi())
+  {
+    PortailChange();
   }
+  // Changer le sens ou démarrer le mouvement du portail
   // Avec le bouton pressoir
   if ((demande && demandeAccept))
     PortailChange();
@@ -148,7 +148,10 @@ bool TryStopAction() {
   if (capteurs && detectCapteur) { // Capteur détecte le portail
     // Arrêter moteur
     if (MoteurState())
+    {
+      Par.Println((String)(currentMillis-timerStart));
       MoteurStop();
+    }
 
     if (fermetureEnCours || ouvertureEnCours) {
       // Renitialiser valeurs

@@ -1,15 +1,15 @@
 // Peut être changer par l'ajout de texte dans un mot
-String currentMDPInput = ""; // MDP taper par l'utilisateur
-String MDPValue = ""; // MDP Sauvegarder par le système
+String motDePasseTaper = ""; // MotDePasse taper par l'utilisateur
+String MotDePasseValue = ""; // MotDePasse Sauvegarder par le système
 
-bool MDPCreate = false;
-bool MDP = false;
-bool MDPInput = false;
+bool MotDePasseCreate = false;
+bool MotDePasse = false;
+bool MotDePasseInput = false;
 long count;
 
-const long timerMDP = 10000;       // Temps durant lequel le MDP est actif 60s
-const long timerInputMDP = 20000;  // temps durant lequel l'utilisateur peux entrer le MDP 20s
-long countMDP = 0;                 // Variable pour compter le temps passé 
+const long timerMotDePasse = 10000;       // Temps durant lequel le MotDePasse est actif 60s
+const long timerInputMotDePasse = 20000;  // temps durant lequel l'utilisateur peux entrer le MotDePasse 20s
+long countMotDePasse = 0;                 // Variable pour compter le temps passé 
 
 const long timerDelayInput = 10000;  // Temps durant lequel l'utilisateur peux taper un numéro de son code 10s
 int KeyPadNumber = -1;  // Nombre taper sur le Keypad
@@ -17,85 +17,87 @@ int wantHelp = 0; // L'utilisateur a besoin d'aide
 
 
 // Condition du mot de passe
-bool MDPVerification() {
+bool MotDePasseVerification() {
 
   long currentMilli = currentMillis;  // Mise à jour de la valeur currentMilli
-  count = currentMilli - countMDP;
+  count = currentMilli - countMotDePasse;
   KeyPadNumber = SetNumberPad();  // Avoir une valeur si le l'utilisateur utilise le keypad
-  if(wantHelp >= 3) // L'utilisateur ne se rapelle plus du MDP
+  if(wantHelp >= 3) // L'utilisateur ne se rapelle plus du MotDePasse
   {
-    MDPInput = false;
-    MDPValue = ""; // Remettre à zéro le MDP
-    MDPCreate = false; // Dire que le MDP n'est plus là 
+    ResetTimer(&countMotDePasse);  // Remettre le compteur à 0
+    RemoveMotDePasse(); // Effacer le MotDePasse taper par l'utilisateur
+    EffacerMoteDePasse(); 
+
+    AfficherMotDePasse();; // Mettre à jour l'affichage du texte
+    
   }
-  // Quand l'utilisateur peux taper un MDP
-  if (MDPInput) {
-    // Taper le MDP et vérifier s'il est bon
-    if (!MDPCreate && VerifierCreationMDP()) {
+  // Quand l'utilisateur peux taper un MotDePasse
+  if (MotDePasseInput) {
+    // Taper le MotDePasse et vérifier s'il est bon
+    if (!MotDePasseCreate && VerifierCreationMotDePasse()) {
       Par.Println("Yahoo");
-      MDPCreate = true;
-      MDP = true;
+      MotDePasseCreate = true;
+      MotDePasse = true;
       return true;
     }
 
-    if (TimerEndReset())  // Trop de temps pour taper le MDP : terminer la procédure
+    if (TimerEndReset())  // Trop de temps pour taper le MotDePasse : terminer la procédure
     {
       Par.Println("Reset");
-      MDPInputValueReset();  // L'utilisateur ne tape plus de MDP
+      MotDePasseInputValueReset();  // L'utilisateur ne tape plus de MotDePasse
       LCDDisplay();          // Affciher l'état actuel du portail
     }
 
-    else if(MDPCreate && VerifierMDP())
+    else if(MotDePasseCreate && VerifierMotDePasse())
     {
-      MDP = true;
+      MotDePasse = true;
       return true;
     }
     
   }
 
-  // Si le MDP est actif mais que le timer est écoulé
-  if (MDP && count > timerMDP) {
-    MDP = false;           // Il faut retaper le MDP
-    MDPInputValueReset();  // L'utilisateur ne tape plus de MDP
+  // Si le MotDePasse est actif mais que le timer est écoulé
+  if (MotDePasse && count > timerMotDePasse) {
+    MotDePasse = false;           // Il faut retaper le MotDePasse
+    MotDePasseInputValueReset();  // L'utilisateur ne tape plus de MotDePasse
     Par.Println("Le Mot de passe n'est plus valide");
-    ResetTimer(&countMDP); // Remettre le compteur à 0
+    ResetTimer(&countMotDePasse); // Remettre le compteur à 0
   }
 
   if (digitalRead(bPExt)) {  // Vérifier si le bouton extérieur est pressé
-    if (MDPInputStart()) return true;
-    ResetTimer(&countMDP);  // Remettre le compteur à 0
-    RemoveMDP(); // Effacer le MDP taper par l'utilisateur
+    if (MotDePasseInputStart()) return true;
+    ResetTimer(&countMotDePasse);  // Remettre le compteur à 0
+    RemoveMotDePasse(); // Effacer le MotDePasse taper par l'utilisateur
   }
 
   return false;
 }
 
-bool VerifierCreationMDP() {
+// Vérifier si le Mot de passe est taper en entier, à la création
+bool VerifierCreationMotDePasse() {
   // On regarde Ce qu'à écrit l'utilisateur
-
-  if (UserKeypadUse() && currentMDPInput.length() == 6) {
-    MDPValue = currentMDPInput; // On initialise le MDP
-    LCDMDPCreated();
+  if (UserKeypadUse() && motDePasseTaper.length() == 6) {
+    MotDePasseValue = motDePasseTaper; // On initialise le MotDePasse
+    LCDMotDePasseCreated();
     return true;
   }
 
   return false;
 }
 
-bool VerifierMDP() {
-
-  // On regarde Ce qu'à écrit l'utilisateur et s'il tape un nombre ajouter à la liste et L'utilisateur a taper un MDP
-  if (UserKeypadUse() && currentMDPInput.length() == 6) {
-    if (Equal(currentMDPInput, MDPValue))  // On compare le MDP taper par l'utilisateur avec le MDP sauvegardé
+// On regarde Ce qu'à écrit l'utilisateur et s'il tape un nombre : ajouter à la liste
+bool VerifierMotDePasse() {
+  if (UserKeypadUse() && motDePasseTaper.length() == 6) {
+    if (Equal(motDePasseTaper, MotDePasseValue))  // On compare le MotDePasse taper par l'utilisateur avec le MotDePasse sauvegardé
     {
-      Par.Println("MDP correct");
-      LCDMDPTrue();  // Afficher que le MDP est bon
-      MDPInputValueReset(); // Remettre le MDP à zéro
+      Par.Println("MotDePasse correct");
+      LCDMotDePasseTrue();  // Afficher que le MotDePasse est bon
+      MotDePasseInputValueReset(); // Remettre le MotDePasse à zéro
       return true;
-    } else  // Le MDP est mauvais
+    } else  // Le MotDePasse est mauvais
     {
-      LCDMDPFalse();         // Afficher que le MDP est mauvais
-      MDPInputValueReset();  // Remettre à zéro valeurs
+      LCDMotDePasseFalse();         // Afficher que le MotDePasse est mauvais
+      MotDePasseInputValueReset();  // Remettre à zéro valeurs
     }
   }
   return false;
@@ -106,33 +108,34 @@ void ResetTimer(long* timer) {
   *timer = currentMillis;  // Rénitialise la valeur indiqué
 }
 
-// Quand l'utilisateur appuis sur le bouton sans avoir activer le MDP
-bool MDPInputStart() {
-  if (MDP)        // Vérifier si le MDP est actif
+// Quand l'utilisateur appuis sur le bouton sans avoir activer le MotDePasse
+bool MotDePasseInputStart() {
+  if (MotDePasse)        // Vérifier si le MotDePasse est actif
     return true;  // Faire bouger le portail
 
-  if (MDPValue != "") LCDInputMDP();  // afficher que l'utilisateur doit taper le MDP
-  else LCDSetMDP(); // afficher le texte de création de MDP
-  MDPInput = true;
+  if(!MotDePasseInput)
+    AfficherMotDePasse();
+  
+  MotDePasseInput = true;
   return false;
 }
 
-// L'utilisateur ne veux / peux plus taper le MDP
-void MDPInputValueReset() {
-  MDPInput = false;
-  RemoveMDP();  // Effacer la suite de chiffres que l'utilisateurs était en train de taper
+// L'utilisateur ne veux / peux plus taper le MotDePasse
+void MotDePasseInputValueReset() {
+  MotDePasseInput = false;
+  RemoveMotDePasse();  // Effacer la suite de chiffres que l'utilisateurs était en train de taper
 }
 
-// L'utilisateur n'a pas le temps de taper son MDP : Fin de la procédure
+// L'utilisateur n'a pas le temps de taper son MotDePasse : Fin de la procédure
 bool TimerEndReset() {
-  if (count > timerInputMDP)
+  if (count > timerInputMotDePasse)
     return true;
   // Temps trop long pour taper une touche : 10s
-  if (currentMDPInput != "" && count > timerDelayInput)
+  if (motDePasseTaper != "" && count > timerDelayInput)
     return true;
 
    // Temps trop long pour taper une touche : 10s
-  if(currentMDPInput.length() > 0 && count > timerDelayInput)
+  if(motDePasseTaper.length() > 0 && count > timerDelayInput)
     return true;
   
   return false;
@@ -141,7 +144,7 @@ bool TimerEndReset() {
 // Ajoute à la liste un nombre
 bool UserKeypadUse() {
   if (KeypadUse()) {
-    AddToCurrentMDP(); // Ajouter le nombre au MDP tapé
+    AddToCurrentMotDePasse(); // Ajouter le nombre au MotDePasse tapé
   }
   return KeypadUse();
 }
@@ -151,18 +154,34 @@ bool Equal(String string1, String string2) {
   return string1.equals(string2);
 }
 
-bool AddToCurrentMDP()
+// Ajouter le nombre au MotDePasse
+bool AddToCurrentMotDePasse()
 {
-  currentMDPInput += KeyPadNumber;  // Ajouter le chiffre à la suite
+  motDePasseTaper += KeyPadNumber;  // Ajouter le chiffre à la suite
   Par.Print("KeyPadNumber: ");
-  Par.Println((String)currentMDPInput.length());
-  ResetTimer(&countMDP);
+  Par.Println((String)motDePasseTaper.length());
+  ResetTimer(&countMotDePasse);
   return true;
 }
 
-// Remettre le MDP taper par l'utilisateur à zéro
-void RemoveMDP()
+// Remettre le MotDePasse taper par l'utilisateur à zéro
+void RemoveMotDePasse()
 {
-  currentMDPInput = ""; // Remettre le MDP taper par l'utilisateur à zéro
+  motDePasseTaper = ""; // Remettre le MotDePasse taper par l'utilisateur à zéro
   wantHelp = 0; // L'utilisateur ne veux pas d'aide 
+}
+
+// Afficher le texte que voit l'utilisateur quand t'il appuis sur le bouton Exterieur
+void AfficherMotDePasse()
+{
+  if (MotDePasseCreate) LCDInputMotDePasse();  // afficher que l'utilisateur doit taper le MotDePasse
+  else LCDSetMotDePasse(); // afficher le texte de création de MotDePasse
+}
+
+// Effacer le mot de passe dans les données
+void EffacerMoteDePasse()
+{
+  motDePasseTaper = ""; // Effacer le Mot de passe actuel 
+  MotDePasseValue = ""; // Effacer le mot de passe enregistré
+  MotDePasseCreate = false; // Dire que le MotDePasse n'est plus là 
 }

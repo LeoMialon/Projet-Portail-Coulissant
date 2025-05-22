@@ -33,7 +33,7 @@ bool MoteurState() {
 
 // Arrêter le moteur
 bool MoteurStop() {
-  MDPInputValueReset();  // L'utilisateur ne veux plus taper le MPD
+  MotDePasseInputValueReset();  // L'utilisateur ne veux plus taper le MPD
 
   moteurWork = false;
 
